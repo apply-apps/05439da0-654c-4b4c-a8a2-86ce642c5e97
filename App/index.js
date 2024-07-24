@@ -1,14 +1,14 @@
 // Filename: index.js
 // Combined code from all files
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, ActivityIndicator, FlatList } from 'react-native';
 import axios from 'axios';
 
 const Header = () => {
     return (
-        <View style={styles.header}>
-            <Text style={styles.headerText}>Workout Tracker</Text>
+        <View style={headerStyles.header}>
+            <Text style={headerStyles.headerText}>Workout Tracker</Text>
         </View>
     );
 };
@@ -34,7 +34,7 @@ const WorkoutList = () => {
 
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
+            <View style={workoutListStyles.loadingContainer}>
                 <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
@@ -45,20 +45,20 @@ const WorkoutList = () => {
             data={workouts}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-                <View style={styles.workoutItem}>
-                    <Text style={styles.workoutTitle}>{item.title}</Text>
-                    <Text style={styles.workoutBody}>{item.body}</Text>
+                <View style={workoutListStyles.workoutItem}>
+                    <Text style={workoutListStyles.workoutTitle}>{item.title}</Text>
+                    <Text style={workoutListStyles.workoutBody}>{item.body}</Text>
                 </View>
             )}
-            contentContainerStyle={styles.list}
+            contentContainerStyle={workoutListStyles.list}
         />
     );
 };
 
 export default function App() {
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollView}>
+        <SafeAreaView style={appStyles.container}>
+            <ScrollView contentContainerStyle={appStyles.scrollView}>
                 <Header />
                 <WorkoutList />
             </ScrollView>
@@ -66,7 +66,7 @@ export default function App() {
     );
 }
 
-const styles = StyleSheet.create({
+const appStyles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 20,
@@ -75,6 +75,9 @@ const styles = StyleSheet.create({
     scrollView: {
         padding: 20,
     },
+});
+
+const headerStyles = StyleSheet.create({
     header: {
         marginBottom: 20,
         padding: 20,
@@ -87,6 +90,9 @@ const styles = StyleSheet.create({
         color: '#FFF',
         textAlign: 'center',
     },
+});
+
+const workoutListStyles = StyleSheet.create({
     list: {
         paddingBottom: 20,
     },
