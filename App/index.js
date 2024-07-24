@@ -2,29 +2,18 @@
 // Combined code from all files
 
 import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
 const Stack = createStackNavigator();
-
-const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
-        <Stack.Screen name="Signup" component={SignupScreen} options={{ title: 'Signup' }} />
-        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
+    // Implement login logic here
     navigation.navigate('Home');
   };
 
@@ -58,6 +47,7 @@ const SignupScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
   const handleSignup = () => {
+    // Implement signup logic here
     navigation.navigate('Home');
   };
 
@@ -88,17 +78,44 @@ const SignupScreen = ({ navigation }) => {
 
 const HomeScreen = () => {
   return (
-    <View style={styles.container}>
+    <View style={styles.containerHome}>
       <Text style={styles.title}>Welcome to Home Screen!</Text>
     </View>
   );
 };
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: 'green',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}>
+        <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Login' }} />
+        <Stack.Screen name="Signup" component={SignupScreen} options={{ title: 'Signup' }} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+  },
+  containerHome: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
@@ -114,5 +131,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
-
-export default App;
