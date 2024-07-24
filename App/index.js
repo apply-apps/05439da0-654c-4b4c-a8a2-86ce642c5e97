@@ -1,10 +1,10 @@
 // Filename: index.js
 // Combined code from all files
 
-import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 
+// Header.js
 const Header = () => {
     return (
         <View style={styles.header}>
@@ -13,16 +13,18 @@ const Header = () => {
     );
 };
 
+// WorkoutList.js
 const WorkoutList = () => {
     const [workouts, setWorkouts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [completedCount, setCompletedCount] = useState(0);
 
     useEffect(() => {
         const fetchWorkouts = async () => {
             try {
                 const response = await fetch('https://jsonplaceholder.typicode.com/posts');
                 const data = await response.json();
-                setWorkouts(data);
+                setWorkouts(data.slice(0, 10)); // Limiting to first 10 workouts
             } catch (error) {
                 console.error("Error fetching workouts:", error);
             } finally {
@@ -33,6 +35,17 @@ const WorkoutList = () => {
         fetchWorkouts();
     }, []);
 
+    const toggleCompletion = (id) => {
+        setWorkouts((prevWorkouts) =>
+            prevWorkouts.map((workout) =>
+                workout.id === id ? { ...workout, completed: !workout.completed } : workout
+            )
+        );
+        setCompletedCount((prevCount) =>
+            workouts.find((workout) => workout.id === id).completed ? prevCount - 1 : prevCount + 1
+        );
+    };
+
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
@@ -42,20 +55,28 @@ const WorkoutList = () => {
     }
 
     return (
-        <FlatList
-            data={workouts}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-                <View style={styles.workoutItem}>
-                    <Text style={styles.workoutTitle}>{item.title}</Text>
-                    <Text style={styles.workoutBody}>{item.body}</Text>
-                </View>
-            )}
-            contentContainerStyle={styles.list}
-        />
+        <View>
+            <Text style={styles.counter}>Completed Workouts: {completedCount}</Text>
+            <FlatList
+                data={workouts}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => toggleCompletion(item.id)}>
+                        <View style={styles.workoutItem}>
+                            <Text style={styles.workoutTitle}>{item.title}</Text>
+                            <Text style={[styles.workoutBody, item.completed && styles.completed]}>
+                                {item.body}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+                contentContainerStyle={styles.list}
+            />
+        </View>
     );
 };
 
+// App.js
 export default function App() {
     return (
         <SafeAreaView style={styles.container}>
@@ -115,5 +136,15 @@ const styles = StyleSheet.create({
         marginTop: 5,
         fontSize: 14,
         color: '#555',
+    },
+    completed: {
+        textDecorationLine: 'line-through',
+        color: '#999',
+    },
+    counter: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
     },
 });
