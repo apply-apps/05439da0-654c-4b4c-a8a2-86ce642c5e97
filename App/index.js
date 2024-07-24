@@ -2,13 +2,13 @@
 // Combined code from all files
 
 import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, ActivityIndicator, FlatList } from 'react-native';
-import axios from 'axios';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
+import { useState, useEffect } from 'react';
 
 const Header = () => {
     return (
-        <View style={headerStyles.header}>
-            <Text style={headerStyles.headerText}>Workout Tracker</Text>
+        <View style={styles.header}>
+            <Text style={styles.headerText}>Workout Tracker</Text>
         </View>
     );
 };
@@ -20,8 +20,9 @@ const WorkoutList = () => {
     useEffect(() => {
         const fetchWorkouts = async () => {
             try {
-                const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-                setWorkouts(response.data);
+                const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+                const data = await response.json();
+                setWorkouts(data);
             } catch (error) {
                 console.error("Error fetching workouts:", error);
             } finally {
@@ -34,7 +35,7 @@ const WorkoutList = () => {
 
     if (loading) {
         return (
-            <View style={workoutListStyles.loadingContainer}>
+            <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
@@ -45,20 +46,20 @@ const WorkoutList = () => {
             data={workouts}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-                <View style={workoutListStyles.workoutItem}>
-                    <Text style={workoutListStyles.workoutTitle}>{item.title}</Text>
-                    <Text style={workoutListStyles.workoutBody}>{item.body}</Text>
+                <View style={styles.workoutItem}>
+                    <Text style={styles.workoutTitle}>{item.title}</Text>
+                    <Text style={styles.workoutBody}>{item.body}</Text>
                 </View>
             )}
-            contentContainerStyle={workoutListStyles.list}
+            contentContainerStyle={styles.list}
         />
     );
 };
 
 export default function App() {
     return (
-        <SafeAreaView style={appStyles.container}>
-            <ScrollView contentContainerStyle={appStyles.scrollView}>
+        <SafeAreaView style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollView}>
                 <Header />
                 <WorkoutList />
             </ScrollView>
@@ -66,7 +67,7 @@ export default function App() {
     );
 }
 
-const appStyles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 20,
@@ -75,9 +76,6 @@ const appStyles = StyleSheet.create({
     scrollView: {
         padding: 20,
     },
-});
-
-const headerStyles = StyleSheet.create({
     header: {
         marginBottom: 20,
         padding: 20,
@@ -90,9 +88,6 @@ const headerStyles = StyleSheet.create({
         color: '#FFF',
         textAlign: 'center',
     },
-});
-
-const workoutListStyles = StyleSheet.create({
     list: {
         paddingBottom: 20,
     },
